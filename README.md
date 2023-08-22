@@ -1,4 +1,4 @@
-# Diffusion
+# A Basic Diffusion Model
 
 This is a simple implementation of a denoising diffusion model following the paper 'Denoising Diffusion Probabilistic Models' by Jonathan Ho, Ajay Jain, and Pieter Abbeel. It's all written in PyTorch, and is more or less from scratch. This was purely an exercise for me to get my hands dirty with generative modeling, so I didn't go out of my way to produce super high-quality samples.
 
