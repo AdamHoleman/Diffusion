@@ -2,8 +2,6 @@ import torch
 import numpy
 
 
-
-
 class diffusion_process:
     
     def __init__(self, time_steps, beta_1, beta_T):
@@ -35,7 +33,6 @@ class diffusion_process:
         starting with an input batch of images x and a timestep t between 0 and 1, we return a sample x_{t} from q(x_t | x) and the corresponding log probability.
         We'll always work in closed form rather than performing a sequence of samples.
         """
-
         var = self.forward_var(t).view(-1,1,1,1)
         sqrt_var = torch.sqrt(var)
         alpha_bar = torch.sqrt(1-var)
@@ -46,7 +43,6 @@ class diffusion_process:
         return x_t, epsilon
 
 
-
 class diff_model:
 
     """
@@ -55,21 +51,18 @@ class diff_model:
         - Generating (batches of) image samples
         - Generating conditional samples (given a class-trained UNET)
         - Functions to implement the general ELBO loss function (equation (5)) for training rather than the simplified objective of equation (12)
-    """
-    
+    """   
     def __init__(self, dif_proc, denoiser, device):
         """
             - dif_proc should be an instance of the diffusion process class
             - denoiser should be the neural network (typically some form of UNET) used to train the model
-        """
-        
+        """      
         self.device = device
         self.dif_proc = dif_proc
         self.denoiser = denoiser 
         self.T = dif_proc.T
 
-        
-    
+   
     def generate(self, batch_size=64):
         """
         This function generates a batch of images following algorithm 2 from Ho et al.
@@ -96,9 +89,6 @@ class diff_model:
             im = (im*255).type(torch.uint8)
     
             return im
-
-
-
 
     
     def conditional_generate(self, label, batch_size=64):
@@ -128,15 +118,12 @@ class diff_model:
             im = (im*255).type(torch.uint8)
     
             return im
-         
-        
-        
+               
         
     def gaussian_kl(self, mean_1, logvar_1, mean_2, logvar_2, reduction = None):
         """
         Given two Gaussian distributions p_1 and p_2, returns D_{KL}(p_1 || p_2)
         """
-       
         D = 0.5 * (-1.0 + logvar_2 - logvar_1 + torch.exp(logvar_1 - logvar_2)
             + ((mean_1-mean_2)**2) * torch.exp(-logvar_2))
         
@@ -144,10 +131,7 @@ class diff_model:
             return torch.sum(D)
         else:
             return D
-        
-        
-        
-        
+              
         
     def posterior_parameters(self, x_0, x_t, t):
         """
@@ -167,16 +151,13 @@ class diff_model:
         var = (1-alpha_bar_s)/(1-alpha_bar_t)*beta_t
         
         return mean, torch.log(var)
-        
-        
-              
+                  
         
     def model_distribution_parameters(self, x_t, t):
         """
         returns the mean and log-variance of p(x_{t-1}|x_{t}) according to equation (11) for the mean, and the choice of sigma^2_{t} = beta_{t} as in
         the first paragraph of 3.2
-        """
-        
+        """      
         beta_t = self.dif_proc.variance_schedule[t]
         alpha_bar_t = 1- self.dif_proc.forward_var(t)
         
@@ -185,14 +166,12 @@ class diff_model:
         mean = (1/(1-beta_t)**.5)*(x_t - beta_t/((1-alpha_bar_t)**.5)*epsilon_theta)
         
         return mean, torch.log(beta_t)
-        
-              
+                 
         
     def L_t(self, x_0, x_t, t):
         """
         Given a clean image x_0 and a noisy version x_t, return D_{KL}(q(x_{t-1}| x_t, x_0) || p(x_{t-1}|x_t)), or ||eps - eps_theta||^2
         """
-
         mu_q, logvar_q = self.posterior_parameters(x_0, x_t, t)       
         mu_p, logvar_p = self.model_distribution_parameters(x_t, t)
         
