@@ -5,9 +5,6 @@ from torch.utils.data.dataloader import DataLoader
 from diffusion import diff_model, diffusion_process
 
 
-
-#--------------------------------------------------------- Adapted from the MinGPT github --------------------------------------------------------------------------
-
 class diffusion_trainer():
   @staticmethod
   def get_default_config():
@@ -40,7 +37,6 @@ class diffusion_trainer():
     self.optimizer = None
     self.train_dataset = trainset
 
-
     # determine the device we'll train on
     if config['device'] == 'auto':
       self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -50,12 +46,10 @@ class diffusion_trainer():
     self.model = self.model.to(self.device)
     print("running on device", self.device)
 
-
     # variables that will be assigned to trainer class later for logging
     self.iter_num = 0
     self.iter_time = 0.0
     self.iter_dt = 0.0
-
 
 
   def run(self, epochs = 100, printing = True):
@@ -67,7 +61,6 @@ class diffusion_trainer():
         	lr = config['learning_rate'],
         	betas = config['betas'])
 
-
     # setup the dataloader
     trainloader = DataLoader(
             self.train_dataset,
@@ -76,11 +69,9 @@ class diffusion_trainer():
             num_workers=config['num_workers'],
         )
 
-
     #initialize a diffusion model with the given network as the denoiser
     dif_proc = diffusion_process(config['timesteps'], config['beta_0'], config['beta_T'])
     dif_mod = diff_model(dif_proc, model, self.device)
-
 
     tot_loss = torch.zeros(epochs).to(device)
     dif_mod.denoiser.train()
@@ -108,7 +99,6 @@ class diffusion_trainer():
          loss.backward()
          self.optimizer.step()
          tot_loss[i] += loss.detach()
-
 
          self.iter_num += 1
          tnow = time.time()
