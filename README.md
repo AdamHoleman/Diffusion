@@ -12,6 +12,6 @@ The jupyter notebook is a brief demo on the CIFAR-10 dataset. To speed up traini
 
 This is an offshoot of a class project for Comp_Sci 449 at Northwestern, taken in the Spring of 2023. In that project, I worked with Jason Huang and Divy Kumar to compare existing implementations of diffusion models and GANs on CIFAR-10, and I certainly benefitted from conversations with them. That being said, all the code here is my own.
 
-Does the deer class in CIFAR-10 also include moose?
+Here's one of the generated images (which looks like a moose!). You can see a batch of generated images in the demo notebook.
 
 ![SingleDeerSmall](https://github.com/AdamHoleman/Diffusion/assets/121455892/8d3c24c5-a646-4b36-81f1-f87fe87dfdbd)
