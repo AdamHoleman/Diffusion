@@ -52,8 +52,8 @@ class Residual_Block(nn.Module):
         return F.gelu(y + x) #adding a non-linearity into the residual connection seems to help training dynamics
 
 
-
 class Self_Attention(nn.Module): 
+
     def __init__(self, channels, size):
         super(Self_Attention, self).__init__()
         self.channels = channels
@@ -76,17 +76,14 @@ class Self_Attention(nn.Module):
         return att.swapaxes(2, 1).view(-1, self.channels, self.size, self.size)
 
 
-
-
-
 class Down_Block(nn.Module):
+
     def __init__(self, in_ch, out_ch, im_size):
         super().__init__()
 
         self.conv = Residual_Block(in_ch, out_ch)
         self.dsample = nn.MaxPool2d(2)
         self.att = Self_Attention(out_ch, im_size//2)
-
 
     def forward(self, x, t):
         x = self.dsample(x)
@@ -96,10 +93,8 @@ class Down_Block(nn.Module):
         return x
 
 
-
-
-
 class Up_Block(nn.Module):
+
     def __init__(self, in_ch, out_ch, im_size):
         super().__init__()
 
@@ -115,11 +110,9 @@ class Up_Block(nn.Module):
         return y
 
 
-
-
-
 class UNET(nn.Module):
     #A mildly customizable UNET architecture, allowing the user to specify the desired number of contracting layers.
+
     def __init__(self, num_contracting, im_size = 32):
         super().__init__()
 
@@ -156,7 +149,6 @@ class UNET(nn.Module):
 
         #bring back to rbg channels
         self.out_conv = nn.Conv2d(64, 3, kernel_size = 1)
-
 
     def forward(self, x, t):
         
